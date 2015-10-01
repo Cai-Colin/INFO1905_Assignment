@@ -1,0 +1,134 @@
+package doublehashmap;
+
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+
+import org.junit.Test;
+
+public class DoubleHashMapTest
+{
+	@Test
+	public void testConstruction()
+	{
+		DoubleHashMap<String, String> h = new DoubleHashMap<String, String>(1, 1, 1);
+		assertTrue(h.isEmpty());
+		assertEquals(0, h.size());
+		assertEquals(0, h.putCollisions());
+		assertEquals(0, h.totalCollisions());
+		assertEquals(0, h.maxCollisions());
+		assertEquals(new ArrayList<String>(), h.keys());
+	}
+	
+	@Test
+	public void testCollision()
+	{
+		DoubleHashMap<String, String> h = new DoubleHashMap<String, String>(1, 2, 1);
+		
+		System.out.println(h.hash("a"));
+		System.out.println(h.secondaryHash("a"));
+		System.out.println(h.hash("b"));
+		System.out.println(h.secondaryHash("b"));
+		System.out.println(h.hash("c"));
+		System.out.println(h.secondaryHash("c"));
+		System.out.println(h.hash("d"));
+		System.out.println(h.secondaryHash("d"));
+		
+		/**
+		 * [ ][ ][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 */
+		assertEquals(0, h.putCollisions());
+		assertEquals(0, h.totalCollisions());
+		assertEquals(0, h.maxCollisions());
+		/**
+		 * "a" has a primary hash of 0, and a secondary hash of 1
+		 * 
+		 *  a
+		 *  A
+		 *  |
+		 * [ ][ ][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * [ ][ ][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * 
+		 * [a][ ][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * [A][ ][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 */
+		h.put("a", "A");
+		assertEquals(0, h.putCollisions());
+		assertEquals(0, h.totalCollisions());
+		assertEquals(0, h.maxCollisions());
+		/**
+		 * "b" has a primary hash of 1, and a secondary hash of 1
+		 * 
+		 *     b
+		 *     B
+		 *     |
+		 * [a][ ][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * [A][ ][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * 
+		 * [a][b][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * [A][B][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 */
+		h.put("b", "B");
+		assertEquals(0, h.putCollisions());
+		assertEquals(0, h.totalCollisions());
+		assertEquals(0, h.maxCollisions());
+		/**
+		 * "c" has a primary hash of 0, and a secondary hash of 1
+		 * 
+		 *  c
+		 *  C
+		 *  |
+		 * [a][b][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * [A][B][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * 
+		 *     c
+		 *     C
+		 *     |
+		 * [a][b][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * [A][B][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * 
+		 *        c
+		 *        C
+		 *        |
+		 * [a][b][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * [A][B][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * 
+		 * [a][b][c][ ][ ][ ][ ][ ][ ][ ]...
+		 * [A][B][C][ ][ ][ ][ ][ ][ ][ ]...
+		 */
+		h.put("c", "C");
+		assertEquals(1, h.putCollisions());
+		assertEquals(2, h.totalCollisions());
+		assertEquals(2, h.maxCollisions());
+		/**
+		 *  c
+		 *  D
+		 *  |
+		 * [a][b][c][ ][ ][ ][ ][ ][ ][ ]...
+		 * [A][B][C][ ][ ][ ][ ][ ][ ][ ]...
+		 * 
+		 *     c
+		 *     D
+		 *     |
+		 * [a][b][c][ ][ ][ ][ ][ ][ ][ ]...
+		 * [A][B][C][ ][ ][ ][ ][ ][ ][ ]...
+		 * 
+		 *        c
+		 *        D
+		 *        |
+		 * [a][b][c][ ][ ][ ][ ][ ][ ][ ]...
+		 * [A][B][C][ ][ ][ ][ ][ ][ ][ ]...
+		 * 
+		 * [a][b][c][ ][ ][ ][ ][ ][ ][ ]...
+		 * [A][B][D][ ][ ][ ][ ][ ][ ][ ]...
+		 */
+		h.put("c", "D");
+		assertEquals(1, h.putCollisions());
+		assertEquals(2, h.totalCollisions());
+		assertEquals(2, h.maxCollisions());
+		h.resetStatistics();
+		assertEquals(0, h.putCollisions());
+		assertEquals(0, h.totalCollisions());
+		assertEquals(0, h.maxCollisions());
+	}
+}
