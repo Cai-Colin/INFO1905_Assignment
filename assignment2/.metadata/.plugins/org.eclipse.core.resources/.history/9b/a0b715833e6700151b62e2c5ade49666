@@ -1,0 +1,16 @@
+package doublehashmap;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class DoubleHashMapTest
+{
+	@Test
+	public void testHash()
+	{
+		DoubleHashMap<String, String> h = new DoubleHashMap<String, String>(1, 4000, 1);
+		System.out.println(h.hash(""));
+		System.out.println(h.hash("Hello Worl"));
+	}
+}

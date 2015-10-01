@@ -1,0 +1,51 @@
+package doublehashmap;
+
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+
+import org.junit.Test;
+
+public class DoubleHashMapTest
+{
+	@Test
+	public void testConstruction()
+	{
+		DoubleHashMap<String, String> h = new DoubleHashMap<String, String>(1, 1, 1);
+		assertTrue(h.isEmpty());
+		assertEquals(0, h.size());
+		assertEquals(0, h.putCollisions());
+		assertEquals(0, h.totalCollisions());
+		assertEquals(0, h.maxCollisions());
+		assertEquals(new ArrayList<String>(), h.keys());
+	}
+	
+	@Test
+	public void testCollision()
+	{
+		DoubleHashMap<String, String> h = new DoubleHashMap<String, String>(1, 1, 1);
+		assertEquals(0, h.putCollisions());
+		assertEquals(0, h.totalCollisions());
+		assertEquals(0, h.maxCollisions());
+		h.put("a", "a");
+		assertEquals(0, h.putCollisions());
+		assertEquals(0, h.totalCollisions());
+		assertEquals(0, h.maxCollisions());
+		h.put("b", "b");
+		assertEquals(1, h.putCollisions());
+		assertEquals(1, h.totalCollisions());
+		assertEquals(1, h.maxCollisions());
+		h.put("c", "c");
+		assertEquals(2, h.putCollisions());
+		assertEquals(3, h.totalCollisions());
+		assertEquals(2, h.maxCollisions());
+		h.put("c", "d");
+		assertEquals(2, h.putCollisions());
+		assertEquals(3, h.totalCollisions());
+		assertEquals(2, h.maxCollisions());
+		h.resetStatistics();
+		assertEquals(0, h.putCollisions());
+		assertEquals(0, h.totalCollisions());
+		assertEquals(0, h.maxCollisions());
+	}
+}
