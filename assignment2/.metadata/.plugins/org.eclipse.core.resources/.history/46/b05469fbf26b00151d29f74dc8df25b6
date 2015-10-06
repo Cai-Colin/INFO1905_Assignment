@@ -206,10 +206,7 @@ public class DoubleHashMapTest
 				throw e;
 			}
 		}
-		assertEquals(4, h.putCollisions());
-		assertEquals(9, h.totalCollisions());
-		assertEquals(4, h.maxCollisions());
-		assertEquals(1, h.putFailures());
+
 		
 		/**
 		 * Reset should set all statistics to 0

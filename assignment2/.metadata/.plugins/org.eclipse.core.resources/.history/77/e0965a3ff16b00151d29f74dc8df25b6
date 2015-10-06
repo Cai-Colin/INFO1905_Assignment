@@ -6,20 +6,25 @@ import java.util.List;
 public class DoubleHashMap<K extends Comparable<K>, V>
 {
 	private HashMapNode<K, V>[] array;
+	
+	//Parameters
 	private int multiplier;
 	private int modulus;
 	private int secondaryModulus;
+	
+	//Collision statistics
 	private int collisions;
 	private int probes;
 	private int maxProbes;
+	private int failures;
 	
-	
+	//Sentinel value that removed values are replaced with
 	private HashMapNode<K, V> SENTINEL;
 	{
 		SENTINEL = new HashMapNode<K, V>(null, null);
 	}
 	
-	// construct a DoubleHashMap with 4000 places and given hash parameters
+	//Construct a DoubleHashMap with 4000 places and given hash parameters
 	@SuppressWarnings("unchecked")
 	public DoubleHashMap(int multiplier, int modulus, int secondaryModulus)
 	{
@@ -30,9 +35,10 @@ public class DoubleHashMap<K extends Comparable<K>, V>
 		this.collisions = 0;
 		this.probes = 0;
 		this.maxProbes = 0;
+		this.failures = 0;
 	}
 	
-	// construct a DoubleHashMap with given capacity and given hash parameters
+	//Construct a DoubleHashMap with given capacity and given hash parameters
 	@SuppressWarnings("unchecked")
 	public DoubleHashMap(int hashMapSize, int multiplier, int modulus, int secondaryModulus)
 	{
@@ -45,22 +51,17 @@ public class DoubleHashMap<K extends Comparable<K>, V>
 		this.maxProbes = 0;
 	}
 
-	private int hashCode(K key)
-	{
-		return 0;
-	}
-	
 	public int hash(K key)
 	{
-		return (this.multiplier * Math.abs(hashCode(key))) % this.modulus;
+		return this.multiplier * Math.abs(key.hashCode()) % this.modulus % this.array.length;
 	}
 	
 	public int secondaryHash(K key)
 	{
-		return this.secondaryModulus - (Math.abs(hashCode(key)) % this.secondaryModulus);
+		return (this.secondaryModulus - (Math.abs(key.hashCode()) % this.secondaryModulus)) % this.array.length;
 	}
 	
-	// size (return the number of nodes
+	//Return the number of nodes
 	public int size()
 	{
 		int count = 0;
@@ -74,12 +75,13 @@ public class DoubleHashMap<K extends Comparable<K>, V>
 		return count;
 	}
 	
+	//Returns whether or not the hashmap is empty
 	public boolean isEmpty()
 	{
 		return (this.size() == 0);
 	}
 	
-	// interface methods
+	//Returns a list of keys
 	public List<K> keys()
 	{
 		List<K> keys = new ArrayList<K>();
@@ -93,30 +95,36 @@ public class DoubleHashMap<K extends Comparable<K>, V>
 		return keys;
 	}
 	
+	//Inserts an element, returns the previous value stored in the key (if any)
 	public V put(K key, V value)
 	{
-		int index = this.hashCode(key);
+		int index = this.hash(key);
 		int increment = this.secondaryHash(key);
 		int i = index;
 		int tries = 0;
 		V result = null;
-		do
+		while(true)
 		{
 			if(this.array[i] == null || this.array[i] == this.SENTINEL)
 			{
 				this.array[i] = new HashMapNode<K, V>(key, value);
 				break;
 			}
-			else if(this.array[i].getKey().equals(key))
+			else if(key.equals(this.array[i].getKey()))
 			{
 				result = this.array[i].getValue();
 				this.array[i].setValue(value);
+				tries = 0;
 				break;
 			}
 			tries++;
 			i = (i + increment) % this.array.length;
+			if(i == index)
+			{
+				this.failures++;
+				throw new RuntimeException("Double Hashing failed to find a free position");
+			}
 		}
-		while(i != index);
 		if(tries > this.maxProbes)
 		{
 			this.maxProbes = tries;
@@ -126,72 +134,77 @@ public class DoubleHashMap<K extends Comparable<K>, V>
 		return result;
 	}
 	
-	//Given a key, returns the node stored under it if it exists, else returns null
-	private HashMapNode<K, V> find(K key)
+	//Given a key, returns the index it is stored under it if it exists, else returns null
+	private int find(K key)
 	{
-		int index = this.hashCode(key);
+		int index = this.hash(key);
 		int increment = this.secondaryHash(key);
 		int i = index;
 		do
 		{
 			if(this.array[i] == null)
 			{
-				return null;
+				return -1;
 			}
-			if(this.array[i].getKey().equals(key))
+			if(key.equals(this.array[i].getKey()))
 			{
-				return this.array[i];
+				return i;
 			}
 			i = (i + increment) % this.array.length;
 		}
 		while(i != index);
-		return null;
+		return 0;
 	}
 	
+	//Returns a stored value given its key
 	public V get(K key)
 	{
-		HashMapNode<K, V> node = this.find(key);
-		if(node == null)
+		int index = this.find(key);
+		if(index == -1)
 		{
 			return null;
 		}
 		else
 		{
-			return node.getValue();
+			return this.array[index].getValue();
 		}
 	}
 	
+	//Removes a stored value and returns it, given its key
 	public V remove(K key)
 	{
-		HashMapNode<K, V> node = this.find(key);
-		if(node == null)
+		int index = this.find(key);
+		if(index == -1)
 		{
 			return null;
 		}
 		else
 		{
-			V result = node.getValue();
-			node = this.SENTINEL;
+			V result = this.array[index].getValue();
+			this.array[index] = this.SENTINEL;
 			return result;
 		}
 	}
 	
-	// collision statistics
+	//Returns the number of collisions
 	public int putCollisions()
 	{
 		return this.collisions;
 	}
 	
+	//Returns the total number of probes
 	public int totalCollisions()
 	{
 		return this.probes;
 	}
 	
+	//Returns the largest amount of probes needed for a single collision
 	public int maxCollisions()
 	{
 		return this.maxProbes;
 	}
 	
+	//Resets all the statistics
 	public void resetStatistics()
 	{
 		this.collisions = 0;

@@ -19,114 +19,107 @@ public class DoubleHashMapTest
 		assertEquals(0, h.putCollisions());
 		assertEquals(0, h.totalCollisions());
 		assertEquals(0, h.maxCollisions());
-		assertEquals(0, h.putFailures());
 		assertEquals(new ArrayList<String>(), h.keys());
 	}
 	
 	@Test
 	public void testCollision()
 	{
-		DoubleHashMap<String, String> h = new DoubleHashMap<String, String>(4, 1, 2, 1);		
+		DoubleHashMap<String, String> h = new DoubleHashMap<String, String>(1, 2, 1);		
 		/**
-		 * [ ][ ][ ][ ]
-		 * [ ][ ][ ][ ]
+		 * [ ][ ][ ][ ][ ][ ][ ][ ][ ][ ]...
 		 */
 		assertEquals(0, h.putCollisions());
 		assertEquals(0, h.totalCollisions());
 		assertEquals(0, h.maxCollisions());
-		assertEquals(0, h.putFailures());
 		/**
 		 * "a" has a primary hash of 1, and a secondary hash of 1
 		 * 
 		 *     a
 		 *     A
 		 *     |
-		 * [ ][ ][ ][ ]
-		 * [ ][ ][ ][ ]
+		 * [ ][ ][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * [ ][ ][ ][ ][ ][ ][ ][ ][ ][ ]...
 		 * 
-		 * [ ][a][ ][ ]
-		 * [ ][A][ ][ ]
+		 * [ ][a][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * [ ][A][ ][ ][ ][ ][ ][ ][ ][ ]...
 		 */
 		h.put("a", "A");
 		assertEquals(0, h.putCollisions());
 		assertEquals(0, h.totalCollisions());
 		assertEquals(0, h.maxCollisions());
-		assertEquals(0, h.putFailures());
 		/**
 		 * "b" has a primary hash of 0, and a secondary hash of 1
 		 * 
 		 *  b
 		 *  B
 		 *  |
-		 * [ ][a][ ][ ]
-		 * [ ][A][ ][ ]
+		 * [ ][a][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * [ ][A][ ][ ][ ][ ][ ][ ][ ][ ]...
 		 * 
-		 * [b][a][ ][ ]
-		 * [B][A][ ][ ]
+		 * [b][a][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * [B][A][ ][ ][ ][ ][ ][ ][ ][ ]...
 		 */
 		h.put("b", "B");
 		assertEquals(0, h.putCollisions());
 		assertEquals(0, h.totalCollisions());
 		assertEquals(0, h.maxCollisions());
-		assertEquals(0, h.putFailures());
 		/**
 		 * "c" has a primary hash of 1, and a secondary hash of 1
 		 * 
 		 *     c
 		 *     C
 		 *     |
-		 * [b][a][ ][ ]
-		 * [B][A][ ][ ]
+		 * [b][a][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * [B][A][ ][ ][ ][ ][ ][ ][ ][ ]...
 		 * 
 		 *        c
 		 *        C
 		 *        |
-		 * [b][a][ ][ ]
-		 * [B][A][ ][ ]
+		 * [b][a][ ][ ][ ][ ][ ][ ][ ][ ]...
+		 * [B][A][ ][ ][ ][ ][ ][ ][ ][ ]...
 		 * 
-		 * [b][a][c][ ]
-		 * [B][A][C][ ]
+		 * [b][a][c][ ][ ][ ][ ][ ][ ][ ]...
+		 * [B][A][C][ ][ ][ ][ ][ ][ ][ ]...
 		 */
 		h.put("c", "C");
 		assertEquals(1, h.putCollisions());
 		assertEquals(1, h.totalCollisions());
 		assertEquals(1, h.maxCollisions());
-		assertEquals(0, h.putFailures());
 		/**
 		 * "d" has a primary hash of 0, and a secondary hash of 1
 		 * 
 		 *  d
 		 *  D
 		 *  |
-		 * [b][a][c][ ]
-		 * [B][A][C][ ]
+		 * [b][a][c][ ][ ][ ][ ][ ][ ][ ]...
+		 * [B][A][C][ ][ ][ ][ ][ ][ ][ ]...
 		 * 
 		 *     d
 		 *     D
 		 *     |
-		 * [b][a][c][ ]
-		 * [B][A][C][ ]
+		 * [b][a][c][ ][ ][ ][ ][ ][ ][ ]...
+		 * [B][A][C][ ][ ][ ][ ][ ][ ][ ]...
 		 * 
 		 *        d
 		 *        D
 		 *        |
-		 * [b][a][c][ ]
-		 * [B][A][C][ ]
+		 * [b][a][c][ ][ ][ ][ ][ ][ ][ ]...
+		 * [B][A][C][ ][ ][ ][ ][ ][ ][ ]...
 		 * 
 		 *           d
 		 *           D
 		 *           |
-		 * [b][a][c][ ]
-		 * [B][A][C][ ]
+		 * [b][a][c][ ][ ][ ][ ][ ][ ][ ]...
+		 * [B][A][C][ ][ ][ ][ ][ ][ ][ ]...
 		 * 
-		 * [b][a][c][d]
-		 * [B][A][C][D]
+		 * [b][a][c][d][ ][ ][ ][ ][ ][ ]...
+		 * [B][A][C][D][ ][ ][ ][ ][ ][ ]...
 		 */
 		h.put("d", "D");
 		assertEquals(2, h.putCollisions());
 		assertEquals(4, h.totalCollisions());
 		assertEquals(3, h.maxCollisions());
-		assertEquals(0, h.putFailures());
 		/**
 		 * Probe and collisions statistics should not change
 		 * when replacing the value of a key already in the array
@@ -135,82 +128,29 @@ public class DoubleHashMapTest
 		assertEquals(2, h.putCollisions());
 		assertEquals(4, h.totalCollisions());
 		assertEquals(3, h.maxCollisions());
-		assertEquals(0, h.putFailures());
 		/**
 		 * "f" has a primary hash of 0, and a secondary hash of 1
 		 * 
 		 *  f
 		 *  A
 		 *  |
-		 * [b][ ][c][ ]
-		 * [B][ ][C][ ]
+		 * [b][ ][c][ ][ ][ ][ ][ ][ ][ ]...
+		 * [B][ ][C][ ][ ][ ][ ][ ][ ][ ]...
 		 * 
 		 *     f
 		 *     A
 		 *     |
-		 * [b][ ][c][ ]
-		 * [B][ ][C][ ]
+		 * [b][ ][c][ ][ ][ ][ ][ ][ ][ ]...
+		 * [B][ ][C][ ][ ][ ][ ][ ][ ][ ]...
 		 * 
-		 * [b][f][c][d]
-		 * [B][A][C][D]
+		 * [b][f][c][d][ ][ ][ ][ ][ ][ ]...
+		 * [B][A][C][D][ ][ ][ ][ ][ ][ ]...
 		 */
 		h.remove("a");
 		h.put("f", "A");
 		assertEquals(3, h.putCollisions());
 		assertEquals(5, h.totalCollisions());
 		assertEquals(3, h.maxCollisions());
-		assertEquals(0, h.putFailures());
-		/**
-		 * "g" has a primary hash of 1, and a secondary hash of 1
-		 * 
-		 *     g
-		 *     G
-		 *     |
-		 * [b][f][c][d]
-		 * [B][A][C][D]
-		 * 
-		 *        g
-		 *        G
-		 *        |
-		 * [b][f][c][d]
-		 * [B][A][C][D]
-		 * 
-		 *           g
-		 *           G
-		 *           |
-		 * [b][f][c][d]
-		 * [B][A][C][D]
-		 * 
-		 *  g
-		 *  G
-		 *  |
-		 * [b][f][c][d]
-		 * [B][A][C][D]
-		 * 
-		 *     g
-		 *     G
-		 *     |
-		 * [b][f][c][d]
-		 * [B][A][C][D]
-		 * 
-		 * Exception is thrown
-		 */
-		try
-		{
-			h.put("g", "G");
-		}
-		catch(RuntimeException e)
-		{
-			if(!e.getMessage().equals("Double Hashing failed to find a free position"))
-			{
-				throw e;
-			}
-		}
-		assertEquals(4, h.putCollisions());
-		assertEquals(9, h.totalCollisions());
-		assertEquals(4, h.maxCollisions());
-		assertEquals(1, h.putFailures());
-		
 		/**
 		 * Reset should set all statistics to 0
 		 */
@@ -218,7 +158,6 @@ public class DoubleHashMapTest
 		assertEquals(0, h.putCollisions());
 		assertEquals(0, h.totalCollisions());
 		assertEquals(0, h.maxCollisions());
-		assertEquals(0, h.putFailures());
 	}
 
 	@Test

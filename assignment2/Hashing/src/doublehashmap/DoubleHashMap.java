@@ -16,6 +16,7 @@ public class DoubleHashMap<K extends Comparable<K>, V>
 	private int collisions;
 	private int probes;
 	private int maxProbes;
+	private int failures;
 	
 	//Sentinel value that removed values are replaced with
 	private HashMapNode<K, V> SENTINEL;
@@ -34,6 +35,7 @@ public class DoubleHashMap<K extends Comparable<K>, V>
 		this.collisions = 0;
 		this.probes = 0;
 		this.maxProbes = 0;
+		this.failures = 0;
 	}
 	
 	//Construct a DoubleHashMap with given capacity and given hash parameters
@@ -51,7 +53,7 @@ public class DoubleHashMap<K extends Comparable<K>, V>
 
 	public int hash(K key)
 	{
-		return this.multiplier * Math.abs(key.hashCode()) % this.modulus % this.array.length;
+		return Math.abs(this.multiplier * key.hashCode()) % this.modulus % this.array.length;
 	}
 	
 	public int secondaryHash(K key)
@@ -93,6 +95,17 @@ public class DoubleHashMap<K extends Comparable<K>, V>
 		return keys;
 	}
 	
+	//Updates the three collision statistics
+	private void updateStatistics(int tries)
+	{
+		if(tries > this.maxProbes)
+		{
+			this.maxProbes = tries;
+		}
+		this.probes += tries;
+		this.collisions += Integer.signum(tries);
+	}
+	
 	//Inserts an element, returns the previous value stored in the key (if any)
 	public V put(K key, V value)
 	{
@@ -101,7 +114,7 @@ public class DoubleHashMap<K extends Comparable<K>, V>
 		int i = index;
 		int tries = 0;
 		V result = null;
-		do
+		while(true)
 		{
 			if(this.array[i] == null || this.array[i] == this.SENTINEL)
 			{
@@ -117,14 +130,14 @@ public class DoubleHashMap<K extends Comparable<K>, V>
 			}
 			tries++;
 			i = (i + increment) % this.array.length;
+			if(i == index)
+			{
+				this.failures++;
+				this.updateStatistics(tries);
+				throw new RuntimeException("Double Hashing failed to find a free position");
+			}
 		}
-		while(i != index);
-		if(tries > this.maxProbes)
-		{
-			this.maxProbes = tries;
-		}
-		this.probes += tries;
-		this.collisions += Integer.signum(tries);
+		this.updateStatistics(tries);
 		return result;
 	}
 	
@@ -197,6 +210,12 @@ public class DoubleHashMap<K extends Comparable<K>, V>
 	{
 		return this.maxProbes;
 	}
+
+	//Returns the largest amount of probes needed for a single collision
+	public int putFailures()
+	{
+		return this.failures;
+	}
 	
 	//Resets all the statistics
 	public void resetStatistics()
@@ -204,5 +223,6 @@ public class DoubleHashMap<K extends Comparable<K>, V>
 		this.collisions = 0;
 		this.probes = 0;
 		this.maxProbes = 0;
+		this.failures = 0;
 	}
 }
