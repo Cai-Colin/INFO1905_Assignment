@@ -1,0 +1,104 @@
+package passwordmanager;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import doublehashmap.DoubleHashMap;
+
+public class PasswordManager 
+{
+	//Finals
+	public static final String NAME = "pwdMan";
+	
+	//Data Stores
+	private DoubleHashMap<String, User> userMap;
+	
+	//Construct a PasswordManager with 4000 places
+	//Hash parameters should be multiplier=1 modulus=4271 secondaryModulus=647 
+	public PasswordManager() 
+	{
+		userMap = new DoubleHashMap<String, User>(1, 4271, 647);
+	}
+	
+	//Construct a PasswordManager with size number of places
+	//Hash parameters should be multiplier=1 modulus=4271 secondaryModulus=647 
+	public PasswordManager(int size) 
+	{
+		
+	}
+	
+	//Hash representation of password to be stored on the User object
+	// - Uses sdbm hash function
+	public Long hash(String password)  
+	{
+		Long hash = 0L;
+		for (char c : password.toCharArray()) 
+		{
+			hash = (int)c + (hash << 6) + (hash << 16) - hash;
+		}
+		return hash;
+	}
+	
+	//Userbase methods
+	
+	// - Return an array of the usernames of the users currently stored
+	public List<String> listUsers() 
+	{
+		return this.userMap.keys();
+		
+	}
+	
+	// - Return number of users currently stored
+	public int numberUsers() 
+	{
+		return this.userMap.size();
+	}
+	
+	// - Creates a new user with the provided username and internal password and returns username
+	// - If the user already exists, returns an error string
+	public String addNewUser(String username, String password) 
+	{
+		if(userMap.get(username) == null) 
+		{
+			User newUser = new User(username);
+			newUser.setPassword(NAME, hash(password));
+			userMap.put(username, newUser);
+			return username;
+		} 
+		else
+		{
+			return "User already exists"
+		}
+	}
+	
+	public String deleteUser(String username, String password) 
+	{
+		
+	}
+	
+	// interface methods
+	public String authenticate(String username, String password)
+	{
+		
+	}
+	
+	public String authenticate(String username, String password, String appName) 
+	{
+		
+	}
+	
+	public String resetPassword(String username, String oldPassword, String newPassword) 
+	{
+		
+	}
+	
+	public String resetPassword(String username, String oldPassword, String newPassword, String appName) 
+	{
+		
+	}
+	
+	public String newAppPassword(String username, String thisPassword, String appPassword, String appName) 
+	{
+		
+	}
+}

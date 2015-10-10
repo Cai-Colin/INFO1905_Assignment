@@ -1,0 +1,39 @@
+package passwordmanager;
+
+import doublehashmap.DoubleHashMap;
+
+public class User {
+	
+	//Parameters
+	private String username;
+	
+	//Data Stores
+	private DoubleHashMap<String, Long> passwordStore;
+	passwordStore = new DoubleHashMap<String, Long>(1, 24, 11);
+
+	// Construct a new User with given username and empty password store
+	// store should have size 20, and use multiplier=1 modulus=23 secondaryModulus=11 
+	public User(String username) {
+		
+		this.username = username; 
+	}
+	
+	// get methods
+	public String getUsername() 
+	{
+		
+	}
+	
+	public Long getPassword(String appName) 
+	{
+		
+	}
+	
+	
+	// set method
+	public void setPassword(String appName, Long passwordHash)
+	{
+		
+	}
+
+}

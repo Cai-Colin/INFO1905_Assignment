@@ -1,0 +1,15 @@
+package passwordmanager;
+
+import static org.junit.Assert.*;
+
+
+import org.junit.Test;
+
+public class PasswordManagerTest {
+
+	@Test
+	public void PasswordDataTest() {
+		fail("Not yet implemented");
+	}
+
+}

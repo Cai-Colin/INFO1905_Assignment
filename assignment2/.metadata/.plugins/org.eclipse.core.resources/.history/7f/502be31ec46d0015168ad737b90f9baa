@@ -1,0 +1,18 @@
+package passwordmanager;
+
+public class PasswordManager {
+	// construct a PasswordManager with 4000 places
+	// hash parameters should be multiplier=1 modulus=4271 secondaryModulus=647 public PasswordManager()
+	// construct a PasswordManager with size number of places
+	// hash parameters should be multiplier=1 modulus=4271 secondaryModulus=647 public PasswordManager(int size)
+	// hash representation of password to be stored on the User object
+	public Long hash(String password) // userbase methods
+	// return an array of the usernames of the users currently stored
+	public List<String> listUsers() public int numberUsers()
+	public String addNewUser(String username, String password) public String deleteUser(String username, String password)
+	// interface methods
+	public String authenticate(String username, String password)
+	public String authenticate(String username, String password, String appName)
+	public String resetPassword(String username, String oldPassword, String newPassword)
+	public String resetPassword(String username, String oldPassword, String newPassword, String appName) public String newAppPassword(String username, String thisPassword, String appPassword, String
+	appName) }

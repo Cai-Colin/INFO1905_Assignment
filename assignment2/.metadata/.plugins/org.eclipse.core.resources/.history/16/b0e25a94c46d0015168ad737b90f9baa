@@ -1,0 +1,25 @@
+package passwordmanager;
+
+public class User {
+	// construct a new User with given username and empty password store
+	// store should have size 20, and use multiplier=1 modulus=23 secondaryModulus=11 public User(String username)
+	// get methods
+	
+	
+	
+	
+	public String getUsername() {
+		
+	}
+	
+	public Long getPassword(String appName) {
+		
+	}
+	
+	
+	// set method
+	public void setPassword(String appName, Long passwordHash){
+		
+	}
+
+}
