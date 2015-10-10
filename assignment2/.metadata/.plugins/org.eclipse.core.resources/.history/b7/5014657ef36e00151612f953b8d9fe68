@@ -114,41 +114,27 @@ public class SkipListNode<K extends Comparable<K>, V> implements Comparable<Skip
 	@Override
 	public int compareTo(SkipListNode<K, V> other)
 	{
-		//If this node is a positive sentinel, it is always greater than the other node
-		//If this node is a negative sentinel, it is always lesser than the other node
-		if(this.getKey() == null)
-		{
-			return (this.positive) ? 1 : -1;
-		}
-		//If the other node is a positive sentinel, this node is always lesser than the other node
-		//If the other node is a negative sentinel, this node is always greater than the other node
-		else if(other.getKey() == null)
-		{
-			return (this.positive) ? -1 : 1;
-		}
 		//If the node is not a sentinel, compare the value of the keys
-		else
+		if(this.getKey() != null)
 		{
 			return this.getKey().compareTo(other.getKey());
 		}
-		//Note that this does not consider the possibility that both nodes are
-		//positive sentinels, or negative sentinels, as such should never occur
+		//If the node is a sentinel, return 1 if it is negative, -1 if it is positive
+		else
+		{
+			return (this.positive) ? 1 : -1;
+		}
 	}
 	
-	//Compares a node to a key
 	public int compareTo(K other)
 	{
-		//If the node is not a sentinel, compare the value of the keys
 		if(this.getKey() != null)
 		{
 			return this.getKey().compareTo(other);
 		}
-		//If this node is a positive sentinel, it is always greater than the other node
-		//If this node is a negative sentinel, it is always lesser than the other node
 		else
 		{
 			return (this.positive) ? 1 : -1;
 		}
-		//It is impossible for the other key to be a sentinel
 	}
 }

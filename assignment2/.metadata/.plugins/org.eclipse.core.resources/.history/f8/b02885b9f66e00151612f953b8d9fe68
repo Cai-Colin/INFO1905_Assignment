@@ -146,12 +146,10 @@ public class SkipList<K extends Comparable<K>, V>
 		}
 	}
 	
-	//Inserts an element into the skip list, returning its previous value (if any)
 	public V put(K key, V value)
 	{
 		V result = null;
 		SkipListNode<K, V> prev = this.search(key);
-		//If the element already exists, overwrite its stored value
 		if(prev.compareTo(key) == 0)
 		{
 			result = prev.getValue();
@@ -160,34 +158,26 @@ public class SkipList<K extends Comparable<K>, V>
 				prev.setValue(value);
 			}
 		}
-		//If the element does not already exist, insert it and give it a tower
 		else
 		{
 			int height = 0;
-			//Randomly assigns a tower height
-			//Probability of a tower height of at least h is 2^(-h)
 			for(; this.rng.nextBoolean(); height++);
-			//Grows sentinel towers until they exceed the height of the tower being constructed
 			while(this.height <= height)
 			{
 				this.grow();
 			}
-			//Inserts a node for the element at the lowest level
 			SkipListNode<K, V> node = new SkipListNode<K, V>(key, value);
 			SkipListNode<K, V> next = prev.getNext();
 			this.horiLink(prev, node);
 			this.horiLink(node, next);
-			//Retraces the steps of the search function to construct the tower
 			retrace(node, height);
 		}
 		return result;
 	}
 	
-	//Returns the value stored under a key, returning null the key is not present
 	public V get(K key)
 	{
 		SkipListNode<K, V> node = this.search(key);
-		//If the key is present, return its value
 		if(node.compareTo(key) == 0)
 		{
 			return node.getValue();
@@ -195,17 +185,14 @@ public class SkipList<K extends Comparable<K>, V>
 		return null;
 	}
 	
-	//Removes the element stored under the given key, returning its value
 	public V remove(K key)
 	{
 		SkipListNode<K, V> node = this.search(key);
-		//If the key is not present, return null
 		if(node.compareTo(key) != 0)
 		{
 			return null;
 		}
 		V result = node.getValue();
-		//Move up the key's tower, removing each node
 		for(; node != null; node = node.getAbove())
 		{
 			this.horiLink(node.getPrev(), node.getNext());

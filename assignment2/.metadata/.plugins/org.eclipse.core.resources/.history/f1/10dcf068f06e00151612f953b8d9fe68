@@ -189,12 +189,10 @@ public class DoubleHashMap<K extends Comparable<K>, V>
 	public V get(K key)
 	{
 		int index = this.find(key);
-		//Returns null if the key has not been stored
 		if(index == -1)
 		{
 			return null;
 		}
-		//Returns the value of the key if it has been stored
 		else
 		{
 			return this.array[index].getValue();
@@ -205,13 +203,10 @@ public class DoubleHashMap<K extends Comparable<K>, V>
 	public V remove(K key)
 	{
 		int index = this.find(key);
-		//Returns null if the key has not been stored
 		if(index == -1)
 		{
 			return null;
 		}
-		//Replaces the element stored under the key with a sentinel if has been stored
-		//Then, returns the value that was stored under it
 		else
 		{
 			V result = this.array[index].getValue();
