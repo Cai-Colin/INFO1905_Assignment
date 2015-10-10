@@ -1,0 +1,21 @@
+package doublehashmap;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class DoubleHashMapTest
+{
+	@Test
+	public void testConstruction()
+	{
+		DoubleHashMap<String, String> h = new DoubleHashMap<String, String>(1, 1, 1);
+		assertTrue(h.isEmpty());
+		assertEquals(0, h.size());
+		assertEquals(0, h.putCollisions());
+		assertEquals(0, h.totalCollisions());
+		assertEquals(0, h.maxCollisions());
+		System.out.println(h.hash(""));
+		System.out.println(h.hash("Hello Worl"));
+	}
+}
