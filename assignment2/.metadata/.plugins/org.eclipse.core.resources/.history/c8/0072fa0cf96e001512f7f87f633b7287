@@ -23,7 +23,7 @@ public class SkipListNode<K extends Comparable<K>, V> implements Comparable<Skip
 		//false if negative infinity
 		//true if positive infinity
 		this.positive = false;
-		//Sets neighbors to null
+		
 		this.prev = null;
 		this.next = null;
 		this.above = null;
@@ -37,7 +37,7 @@ public class SkipListNode<K extends Comparable<K>, V> implements Comparable<Skip
 		this.key = null;
 		this.value = null;
 		this.positive = positive;
-		//Sets neighbors to null
+		
 		this.prev = null;
 		this.next = null;
 		this.above = null;

@@ -37,7 +37,7 @@ public class SkipListNode<K extends Comparable<K>, V> implements Comparable<Skip
 		this.key = null;
 		this.value = null;
 		this.positive = positive;
-		//Sets neighbors to null
+		//Sets neighbours to null
 		this.prev = null;
 		this.next = null;
 		this.above = null;
