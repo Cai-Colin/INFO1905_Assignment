@@ -24,7 +24,7 @@ public class SkipList<K extends Comparable<K>, V>
 		this.head = new SkipListNode<K, V>(false);
 		this.init = this.head;
 		this.tail = new SkipListNode<K, V>(true);
-		//Links the sentinels so that the negative preceeds the positive
+		//Links the sentinels so that the negative precedes the positive
 		this.horiLink(this.head, this.tail);
 	}
 	
@@ -112,6 +112,33 @@ public class SkipList<K extends Comparable<K>, V>
 			node = node.getBelow();
 		}
 		return node;
+	}
+	
+	//A variant of search that returns the number of non-sentinel nodes it had to check
+	public int countedSearch(K key)
+	{
+		SkipListNode<K, V> node = this.head;
+		int count = 0;
+		//Moves down to the lowest level of the skip list
+		while(true)
+		{
+			//Moves as far right as possible in the given level
+			//while still satisfying the less than or equal to condition
+			for(; node.getNext().compareTo(key) <= 0; node = node.getNext())
+			{
+				//Increments the counter if the node is not a sentinel
+				if(node.getKey() != null)
+				{
+					count++;
+				}
+			}
+			if(node.getBelow() == null)
+			{
+				break;
+			}
+			node = node.getBelow();
+		}
+		return count;
 	}
 	
 	//Helper method that grows a tower of given height for the given node
